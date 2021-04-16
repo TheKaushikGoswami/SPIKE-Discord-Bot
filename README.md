@@ -1,7 +1,7 @@
 
 # SPIKE-Discord-Bot
 
-<!--Copyright 2019 Arindam Hazra aka Xynox <https://arindamz.github.io/>
+<!--Copyright 2021 TheKaushikGoswami <https:github.com/TheKaushikGoswami>
 
 Licensed under the Apache License, Version 2.0(the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ limitations under the License.
     <img src="https://user-images.githubusercontent.com/70503983/114989350-f95f3400-9eb4-11eb-95f8-b015eff75ee6.png" align="center">
   <br>
   <br>
-    <strong> <i>SPIKE is made with ❤️ by [TheKaushikGoswami](https://github.com/TheKaushikGoswami)
+ <strong> <i>SPIKE is made with ❤️ by <u>TheKaushikGoswami</u>
 
 Spike, a bot to help you in many ways. Spike's current version 1.0 helps the user in many ways making the discord experience for the user way better. It has a great performance and a 24/7 uptime to help you whenever needed.
 It is user friendly to help new users get familiar with it.</i></strong>
