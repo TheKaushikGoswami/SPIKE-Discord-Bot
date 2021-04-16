@@ -19,10 +19,11 @@ limitations under the License.
     <img src="https://user-images.githubusercontent.com/70503983/114989350-f95f3400-9eb4-11eb-95f8-b015eff75ee6.png" align="center">
   <br>
   <br>
- <strong> <i>SPIKE is made with ❤️ by <u>TheKaushikGoswami</u>
-
-Spike, a bot to help you in many ways. Spike's current version 1.0 helps the user in many ways making the discord experience for the user way better. It has a great performance and a 24/7 uptime to help you whenever needed.
-It is user friendly to help new users get familiar with it.</i></strong>
+ <strong> <i>SPIKE is made with ❤️ by <u>TheKaushikGoswami</u></i></strong>
+  
+## What is SPIKE?
+<strong>SPIKE, a bot to help you in many ways. Spike's current version 1.0 helps the user in many ways making the discord experience for the user way better. It has a great performance and a 24/7 uptime to help you whenever needed.
+It is user friendly to help new users get familiar with it.</strong>
   <hr>
 
 <br>
