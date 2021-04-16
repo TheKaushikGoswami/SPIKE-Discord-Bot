@@ -15,7 +15,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 limitations under the License.
 -->
 <div align="center">
-    <img src="https://cdn.discordapp.com/avatars/773180092015968316/2f21a18b54576781fce387abb2a25815.png?size=1024" align="center">
+    <img src="https://cdn.discordapp.com/avatars/773180092015968316/2f21a18b54576781fce387abb2a25815.png?size=400" align="center">
   <br>
   <br>
     <strong> <i>SPIKE is made with ❤️ by [TheKaushikGoswami](https://github.com/TheKaushikGoswami)
