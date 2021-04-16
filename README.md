@@ -1,3 +1,4 @@
+
 # SPIKE-Discord-Bot
 
 <!--Copyright 2019 Arindam Hazra aka Xynox <https://arindamz.github.io/>
@@ -15,7 +16,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 limitations under the License.
 -->
 <div align="center">
-    <img src="https://cdn.discordapp.com/avatars/773180092015968316/2f21a18b54576781fce387abb2a25815.png?size=400" align="center">
+    <img src="https://user-images.githubusercontent.com/70503983/114989350-f95f3400-9eb4-11eb-95f8-b015eff75ee6.png" align="center">
   <br>
   <br>
     <strong> <i>SPIKE is made with ❤️ by [TheKaushikGoswami](https://github.com/TheKaushikGoswami)
