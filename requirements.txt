@@ -1,0 +1,15 @@
+discord.py==1.5.1
+discord==1.0.1
+jishaku
+timeago
+aiohttp
+async-timeout
+requests
+pillow
+praw
+ago
+disputils
+pymongo
+pathlib
+buttons
+prettytable
