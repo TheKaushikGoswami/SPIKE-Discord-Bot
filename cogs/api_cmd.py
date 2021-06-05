@@ -29,7 +29,7 @@ class Api(commands.Cog, name='Api'):
         else:
             req = requests.get(f"{url}").json()
             req_1= json.dumps(req,indent=4)
-            embed = discord.Embed(color = self.Bot.color, timestamp=datetime.datetime.utcnow())
+            embed = discord.Embed(color = self.bot.color, timestamp=datetime.datetime.utcnow())
             embed.set_author(name="API response to ", url=f"{url}", icon_url=ctx.me.avatar_url)
             embed.description=f"```json\n{req_1}```"
             embed.set_footer(text=f"Requested by {ctx.author}")
@@ -330,7 +330,7 @@ class Api(commands.Cog, name='Api'):
     @commands.command(description='Defines most of the words out there', aliases=['meaning', 'define'])
     @commands.guild_only()
     @commands.cooldown(1, 15, commands.BucketType.user)
-    async def dictionary(self, ctx, word:str):
+    async def dictionary(self, ctx, *, word:str):
         try:
             url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
             data = requests.get(url).json()

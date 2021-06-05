@@ -10,6 +10,9 @@ import traceback
 from pathlib import Path # For paths
 import platform
 import praw
+# import motor.motor_asyncio
+#import utils.json
+#from utils.mongo import Document
 # import asyncpg
 
 
@@ -40,8 +43,10 @@ bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=int
 bot.remove_command("help")
 bot.color = 0xa100f2
 bot.guild_id = 773185292211453974
-bot.github = "https://github.com/TheKaushikGoswami/SPIKE-PY.git"
+bot.github = "https://github.com/TheKaushikGoswami/SPIKE-Discord-Bot.git"
+bot.DEFAULT_PREFIX = get_prefix
 
+owner_id = 737903565313409095
 
 # EVENTS
 
@@ -66,7 +71,14 @@ async def on_ready():
             await asyncio.sleep(7)
 
     bot.loop.create_task(ch_pr())
-
+'''
+    bot.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(bot.connection_url))
+    bot.db = bot.mongo["bot_config"]
+    bot.config = Document(bot.db, "config.json")
+    print("Initialized Database\n-----")
+    for document in await bot.config.get_all():
+        print(document)
+'''
 
 #ERROR HANDLING
 
@@ -107,7 +119,7 @@ bot.colors = {
     "DARK_ORANGE": 0xA84300,
     "DARK_RED": 0x992D22,
     "DARK_NAVY": 0xe8c02a,
-    "Hm": 0xebf54c
+    "LIGHT_YELLOW": 0xebf54c
 }
 bot.color_list = [c for c in bot.colors.values()]
 
@@ -122,12 +134,25 @@ async def on_message(msg):
 
     await bot.process_commands(msg)
 
+
+@bot.command()
+async def chat(ctx):
+    channels = ctx.guild.channels
+
+    for channel in channels:
+        if chat in f'{channel.name}':
+            print(f"{channel.id}")
+        else:
+            print(f"No Suitable Channel Found!")
+    return
+
+    
 # COGS SETUP
 
 extensions=[
             'cogs.fun',
             'cogs.utility',
-            'cogs.mod_cmds',
+            'cogs.mod',
             'cogs.nqn',
             'cogs.owner',
             'cogs.api_cmd',
@@ -137,7 +162,10 @@ extensions=[
           #  'cogs.welcome',
         #    'cogs.channel',
             'cogs.snap',
-            'cogs.say'
+            'cogs.say',
+            'cogs.music',
+            'cogs.spike'
+          #  'cogs.rr'
 ]
 if __name__ == "__main__":
     for extension in extensions:
@@ -147,36 +175,7 @@ if __name__ == "__main__":
             print(e)
             traceback.print_exc()
 
-# asyncpg
-"""
-
-async def create_db_pool():
-    bot.db = await asyncpg.create_pool(database="SPIKE" ,user="postgres" , password='TheKaushik@1')
-    print("Succesfully Connected To Database!")
-
-bot.loop.create_task(create_db_pool())
-"""
-
-#SPECIAL CMD
-
-reddit = praw.Reddit(client_id='HjbmApr9tS0P9A',
-                     client_secret='ni7CCh_wEVxJv_HwI4VSZcCpjP9zhQ',
-                     user_agent='SPIKE by u/TheKaushik01',
-                     check_for_async=False)
-"""
-@bot.command()
-@commands.cooldown(1, 15, commands.BucketType.user)
-async def mc(ctx):
-    memes_submissions = reddit.subreddit('minecraftmemes').hot()
-    post_to_pick = random.randint(1, 1000)
-    for i in range(0, post_to_pick):
-        submission = next(x for x in memes_submissions if not x.stickied)
-    e = discord.Embed(color=random.choice(bot.color_list))
-    e.set_image(url=f'{submission.url}')
-    e.set_footer(text=f'Requested by {ctx.author.name}, Source : r/MinecraftMemes',icon_url=ctx.author.avatar_url)
-    await ctx.send(embed=e)
-"""
 
 # TOKEN
 
-bot.run("Your-Token-Here")
+bot.run("NzczMTgwMDkyMDE1OTY4MzE2.X6FeEg.a2-cBziWiH7pQL606O8fE0bsakE")

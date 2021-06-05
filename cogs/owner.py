@@ -45,42 +45,18 @@ class Owner(commands.Cog, name = 'Owner'):
 
     @commands.command()
     @commands.is_owner()
-    async def spam(self,ctx, *, member : discord.Member):
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
-        await ctx.send(f'{member.mention}')
+    async def mention(self,ctx, *, member : discord.User):
         await ctx.send(f'{member.mention}')
         await ctx.send(f'{member.mention}')
         await ctx.send(f'{member.mention}')
         await ctx.send(f'{member.mention}')
         await ctx.send(f'{member.mention}')
 
-    @commands.command(aliases=['disconnect', 'close', 'stopbot'])
+    @commands.command(aliases=['close', 'stopbot'])
     @commands.is_owner()
     async def logout(self, ctx):
-        """
-        If the user running the command owns the bot then this will disconnect the bot from discord.
-        """
         await ctx.send(f"Hey {ctx.author.mention}, I am now logging out :wave:")
-        await self.bot.logout()
+        await self.bot.close()
 
     @logout.error
     async def logout_error(self, ctx, error):
@@ -149,14 +125,6 @@ class Owner(commands.Cog, name = 'Owner'):
         msg = await ctx.send(embed=embed)
         await msg.add_reaction(f"{emojy}")
 
-    @commands.command()
-    @commands.is_owner()
-    @commands.has_permissions(administrator=True)
-    async def bot(self, ctx):
-        embed = discord.Embed(color=random.choice(self.bot.color_list))
-
-        embed.set_thumbnail(url=f'')
-
     # Load command to manage our "Cogs" or extensions
     @commands.command()
     @commands.is_owner()
@@ -189,28 +157,7 @@ class Owner(commands.Cog, name = 'Owner'):
             await ctx.send(f"**Reloaded the Cog! `{extension}`**") 
         else:
             await ctx.send(f"You are not cool enough to use this command")
-    
-    @commands.command()
-    @commands.is_owner()
-    async def change_avatar(self, ctx, url: str = None):
-        """ Change avatar. """
-        if url is None and len(ctx.message.attachments) == 1:
-            url = ctx.message.attachments[0].url
-        else:
-            url = url.strip('<>') if url else None
 
-        try:
-            bio = await http.get(url, res_method="read")
-            await self.bot.user.edit(avatar=bio)
-            await ctx.send(f"Successfully changed the avatar. Currently using:\n{url}")
-        except aiohttp.InvalidURL:
-            await ctx.send("The URL is invalid...")
-        except discord.InvalidArgument:
-            await ctx.send("This URL does not contain a useable image")
-        except discord.HTTPException as err:
-            await ctx.send(err)
-        except TypeError:
-            await ctx.send("You need to either provide an image URL or upload one with the command")
 
 def setup(bot):
     bot.add_cog(Owner(bot))

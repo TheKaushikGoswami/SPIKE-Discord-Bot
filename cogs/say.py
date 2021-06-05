@@ -10,9 +10,16 @@ class Say(commands.Cog, name='Say'):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
-    async def say(self, ctx, title, *, word):
+    async def embed(self, ctx, title, *, word):
+        await ctx.channel.purge(limit=1)
         em = discord.Embed(title=f'{title}', description=f'{word}', color=random.choice(self.bot.color_list))
         await ctx.send(embed=em)
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def say(self, ctx, *, message):
+        await ctx.channel.purge(limit=1)
+        await ctx.send(message)
 
 def setup(bot):
     bot.add_cog(Say(bot))

@@ -1,3 +1,4 @@
+"""
 from disputils import BotEmbedPaginator
 import discord
 from discord.ext import commands
@@ -90,3 +91,242 @@ class Help(commands.Cog, name = 'Help'):
 def setup(bot):
     bot.add_cog(Help(bot))
     print("Help cog is Working!")
+"""
+
+import discord
+from discord.ext import commands
+from disputils import BotEmbedPaginator
+from cogs.utils import Pag
+import datetime
+
+color = 0x1ABC9C
+nomasti = 'https://pbs.twimg.com/media/EUqVvbQUcAAtL1H.jpg'
+ban = 'https://cdn.discordapp.com/attachments/821649522672926740/839494104755732500/ban_and_unban.gif'
+slowmode = 'https://cdn.discordapp.com/attachments/821649522672926740/839494107051196426/slowmode.gif'
+role = 'https://cdn.discordapp.com/attachments/821649522672926740/839494147332767804/role.gif'
+nickname = 'https://cdn.discordapp.com/attachments/821649522672926740/839494615081287700/nick.gif'
+
+
+class SPIKE(commands.Cog, name='Help'):
+    def __init__(self, Bot):
+        self.bot = Bot
+        self.cmds_per_page = 10
+
+    @commands.command()
+    @commands.guild_only()
+    async def help(self, ctx, *, entity=None):
+        if ctx.channel.id == 757108786497585172:
+            return
+
+        if not entity:
+            embed1 = discord.Embed(
+                color=color, description=f"These are the commands which are executable in the **SPIKE**. For additional info on a command, type `sp!help <command>`. For More Info on Moderation Commands, use `sp!helpmod`.", timestamp=datetime.datetime.utcnow())
+            embed1.set_author(name="Help Interface",
+                              icon_url=f'{ctx.me.avatar_url}')
+            embed1.set_thumbnail(
+                url=f"https://media2.giphy.com/media/401pPJe8AtsC55e1y8/source.gif")
+            embed1.add_field(
+                name="🛡️ Moderation", value=f'`nick` `purge` `purgeuser` `mute` `unmute` `kick` `ban` `dm` `dmuser` `nuke` `role` `slowmode` `lock` `unlock` `name_role`', inline=False)
+            embed1.add_field(
+                name="⚽ Fun & Games", value=f'`8ball` `lovemeter` `rps` `sad/happy/angry` `hello` `lenny` `flip` `f` `calculator` `diceroll` `meme`',  inline=False)
+            embed1.add_field(
+                name="🖼️ Images", value=f'`cat` `dog` `panda` `koala` `pikachu` `clyde` `facepalm` `wink` `headpat` `hug` `snap`', inline=False)
+            embed1.add_field(
+                name="🛠️ Utility", value=f'`userinfo` `serverinfo` `avatar` `membercount` `roleinfo` `channelstats` `dictionary` `say` `embed`',  inline=False)
+            embed1.add_field(
+                name="💭 Facts & Advices", value=f'`dogfact` `catfact` `pandafact` `numberfact` `yearfact` `advice` `aquote` ',   inline=False)
+            embed1.add_field(
+                name="🤖 SPIKE", value=f'`about` `ping` `invite` `support` `help` `uptime`', inline=False)
+            embed1.add_field(
+                name=f"👑 Owner Only", value=f'`reload` `unload` `load` `logout` `stats` `echo`', inline=False)
+
+            embed1.set_footer(text=f"SPIKE is made with ❤️", icon_url=f'{ctx.author.avatar_url}')
+
+            embeds = [embed1]
+            paginator = BotEmbedPaginator(ctx, embeds)
+            await paginator.run()
+        else:
+            command = self.bot.get_command(entity)
+            if command:
+                await self.setup_help_pag(ctx, command, command.name)
+
+            else:
+                await ctx.send(f"**{entity}** not found.")
+
+    async def return_filtered_commands(self, walkable, ctx):
+        filtered = []
+        for c in walkable.walk_commands():
+            try:
+                if c.hidden:
+                    continue
+                elif c.parent:
+                    continue
+                await c.can_run(ctx)
+                filtered.append(c)
+            except commands.CommandError:
+                continue
+        return self.return_sorted_commands(filtered)
+
+    def return_sorted_commands(self, commandList):
+        return sorted(commandList, key=lambda x: x.name)
+
+    def get_command_signature(self, command: commands.Command, ctx: commands.Context):
+        aliases = "| ".join(command.aliases)
+        cmd_invoke = f'[{command.name} | {command.aliases}]' if command.aliases else command.name
+        full_invoke = command.qualified_name.replace(command.name, "")
+        signature = f'sp!{full_invoke}{cmd_invoke} {command.signature}'
+        return signature
+
+    async def setup_help_pag(self, ctx, entity=None, title=None):
+        entity = entity or self.bot
+        title = title or self.bot.description
+
+        pages = []
+
+        if isinstance(entity, commands.Command):
+            filtered_commands = (
+                list(set(entity.all_commands.values()))
+                if hasattr(entity, "all_commands")
+                else []
+            )
+            filtered_commands.insert(0, entity)
+        else:
+            filtered_commands = await self.return_filtered_commands(entity, ctx)
+
+        for i in range(0, len(filtered_commands), self.cmds_per_page):
+            next_commands = filtered_commands[i: i + self.cmds_per_page]
+            commands_entry = ""
+
+            for cmd in next_commands:
+                desc = cmd.short_doc or cmd.description
+                signature = self.get_command_signature(cmd, ctx)
+                subcommands = "Has subcommands " if hasattr(
+                    cmd, "all_commands") else ""
+                commands_entry += (
+                    f" ```{signature}\n```\n**Description:** {desc}\n"
+                    if isinstance(entity, commands.Command)
+                    else f"**{cmd.name}**\n{desc}\n    {subcommands}\n"
+                )
+            pages.append(commands_entry)
+        await Pag(title=title, color=color, entries=pages, length=1).start(ctx)
+
+    @commands.command()
+    async def help_default(self, ctx, *, entity=None):
+        if not entity:
+            await self.setup_help_pag(ctx)
+        else:
+            cog = self.bot.get_cog(entity)
+            if cog:
+                await self.setup_help_pag(ctx, cog, f"{cog.qualified_name}'s commands")
+
+            else:
+                command = self.bot.get_command(entity)
+                if command:
+                    await self.setup_help_pag(ctx, command, command.name)
+
+                else:
+                    await ctx.send(f"{entity} not found.")
+
+    @commands.command(alaises=['moderationcommands'])
+    @commands.guild_only()
+    async def helpmod(self, ctx):
+
+        embed1 = discord.Embed(color=color)
+        embed1.set_author(name="Mod Commands", icon_url=f'{ctx.me.avatar_url}')
+        embed1.add_field(name="Purge", value="**Aliases** : Clear\n"
+                         "**Limit** : 200 \n"
+                         "**Default value** : 3 \n"
+                         "**Permission** : Manage messages \n"
+                         "**Usage**\n ```sp!purge 10```\n\n"
+                         )
+        embed1.add_field(name="PurgeUser", value="**Aliases** : Clearuser\n"
+
+                         "**Permission** : Manage messages\n"
+                         "**Usage**\n ```sp!purgeuser @_TheKaushikG_#5300 10```\n\n"
+                         )
+
+        embed1.add_field(name="Dmuser", value=f"**Aliases** : Pmuser\n"
+
+                         "**Permission** : Manage messages\n"
+                         "**Usage**\n ```sp!dmuser @_TheKaushikG_#5300 why is this a command?```\n\n")
+        embed1.set_footer(
+            text=f"Tip : All the command names are case insensitive.")
+
+        embed2 = discord.Embed(color=color)
+        embed2.add_field(name="Kick", value=f"**Aliases** : None\n"
+
+                         "**Permission** : Kick users\n"
+                         "**Usage**\n ```sp!kick <user> <Reason>```\n")
+        embed2.add_field(name="Ban", value=f"**Aliases** : None\n"
+
+                         "**Permission** : Ban users\n"
+                         "**Usage**\n ```sp!ban <user> <Reason>```\n")
+        embed2.add_field(name="Unban", value=f"**Aliases** : None\n"
+
+                         "**Permission** : Administrator\n"
+                         "**Usage**\n ```sp!unban 737903565313409095```\n"
+                         "**Example :** \n\n", inline=False)
+        embed2.set_image(url=f'{ban}')
+        embed2.set_footer(
+            text=f"Tip : Don't Misuse These Perms or This could result in something bad for U ;D. ")
+        embed3 = discord.Embed(color=color)
+
+        embed3.add_field(name="nick", value=f"**Aliases** : None\n"
+
+                         "**Permission** : Change nickname\n"
+                         "**Usage**\n ```sp!nick @_TheKaushikG_#5300 Kauchik ```\n"
+                         "**Example :** \n\n", inline=False)
+        embed3.set_image(url=f'{nickname}')
+
+        embed3.set_footer(
+            text=f"Tip : Although the commands are insensitive the role names ain't! Be careful.")
+        embed4 = discord.Embed(color=color)
+        embed4.add_field(name='role', value=f"**Aliases** : None\n"
+                                            f'**What for** : To add or remvoe roles to the mentioned user.\n'
+                         "**Permission** : Manage roles\n"
+                         "**Usage**\n ```sp!role @_TheKaushikG_ Daddy ```\n"
+                         "**Example :** \n\n", inline=False)
+        embed4.set_image(url=f'{role}')
+        embed4.set_footer(
+            text='Tip : If used on the user who already has the role, the Bot will remove the role.')
+        embed5 = discord.Embed(color=color)
+        embed5.add_field(name='Channelstats', value=f"**Aliases** : cstats\n"
+                         "**Usage**\n ```sp!channelstats ```\n", inline=False)
+
+        embed5.add_field(name='Slowmode', value=f"**Aliases** : sm\n"
+                         "**Permission** : Manage channel"
+
+                                                "**Usage**\n ```sp!slowmode <time> ```\n\n"
+                                                "**Example **: ```")
+        embed5.set_footer(
+            text='Tip : "sp!Slowmode remove" will remove the slowmode. ')
+        embed5.set_image(url=f'{slowmode}')
+        embed7 = discord.Embed(color=color)
+        embed7.add_field(
+            name='Lock / Unlock', value=f'**Aliases : **None\n **Permission :** Administrator\n **Usage :** ```sp!lock / sp!unlock```', inline=False)
+        embed7.add_field(name='Roleinfo', value=f"**Aliases : **  rinfo\n"
+
+                                                '**Usage**\n ```sp!roleinfo Humans ```\n', inline=False)
+        embed7.set_footer(
+            text=f'Never ever ask for roles anywhere, The mods don\'t like it')
+
+        embeds = [embed1, embed2, embed3, embed4, embed5, embed7]
+        paginator = BotEmbedPaginator(ctx, embeds)
+        await paginator.run()
+
+    @commands.command()
+    async def embedtest(self, ctx):
+        embed1 = discord.Embed(title=f'Page1')
+        embed1.add_field(name="This is a page", value="Yep itsure is")
+        embed2 = discord.Embed(title=f'Page3')
+        embed2.add_field(name="This is a page", value="Yep itsure is")
+        embed3 = discord.Embed(title=f'Page3')
+        embed3.add_field(name="This is a page", value="Yep itsure is")
+        embeds = [embed1, embed2, embed3]
+        paginator = BotEmbedPaginator(ctx, embeds)
+        await paginator.run()
+
+
+def setup(Bot):
+    Bot.add_cog(SPIKE(Bot))
+    print("Help cog is working.")

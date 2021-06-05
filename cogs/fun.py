@@ -18,6 +18,8 @@ from datetime import datetime
 import os
 import sys
 import asyncio
+from aiohttp import request
+
 
 
 class Fun(commands.Cog, name='Fun'):
@@ -250,7 +252,7 @@ class Fun(commands.Cog, name='Fun'):
 
 # dice roll
 
-    @commands.command(aliases=["dice"])
+    @commands.command(aliases=["dice", "diceroll"])
     @commands.guild_only()
     # ludo
     async def roll(self, ctx):
@@ -335,6 +337,30 @@ class Fun(commands.Cog, name='Fun'):
 
         embed.set_footer(text=f'Played with {ctx.author}',icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
+
+#pass
+
+    @commands.command(name="password", aliases=['pass', 'generator', 'passwordgenerator'], description='Get Random Passwords Generated in your DMs')
+    @commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
+    async def password(self, ctx, amt: int = 8):
+        """ Get random password in DM  🔒"""
+        try:
+            nwpss = []
+            lst = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '!', '@',
+                   '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', ",", '}', ']',
+                   '[', ';', ':', '<', '>', '?', '/', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~',
+                   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                   'U', 'V', 'W', 'X', 'Y', 'Z']
+            for x in range(amt):
+                newpass = random.choice(lst)
+                nwpss.append(newpass)
+            fnpss = ''.join(nwpss)
+            await ctx.send(f'{ctx.author} attempting to send you the genereated password in dms.')
+            await ctx.author.send(f':white_check_mark:Password Generated: {fnpss}')
+        except Exception as e:
+            print(e)
+
 
 # setup COMMAND
 

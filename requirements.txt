@@ -1,5 +1,6 @@
-discord.py==1.5.1
-discord==1.0.1
+discord.py
+discord.py[voice]
+discord
 jishaku
 timeago
 aiohttp
@@ -13,3 +14,4 @@ pymongo
 pathlib
 buttons
 prettytable
+youtube_dl
