@@ -178,4 +178,4 @@ if __name__ == "__main__":
 
 # TOKEN
 
-bot.run("NzczMTgwMDkyMDE1OTY4MzE2.X6FeEg.a2-cBziWiH7pQL606O8fE0bsakE")
+bot.run("your-token-here")
