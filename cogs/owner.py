@@ -41,6 +41,14 @@ class Owner(commands.Cog, name = 'Owner'):
 
         await ctx.send(embed=embed)
 
+    @stats.error
+    async def stats_error(self, ctx, error):
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
+        else:
+            raise error
+
     #spam CMD.
 
     @commands.command()
@@ -51,6 +59,14 @@ class Owner(commands.Cog, name = 'Owner'):
         await ctx.send(f'{member.mention}')
         await ctx.send(f'{member.mention}')
         await ctx.send(f'{member.mention}')
+    
+    @mention.error
+    async def mention_error(self, ctx, error):
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
+        else:
+            raise error
 
     @commands.command(aliases=['close', 'stopbot'])
     @commands.is_owner()
@@ -60,11 +76,9 @@ class Owner(commands.Cog, name = 'Owner'):
 
     @logout.error
     async def logout_error(self, ctx, error):
-        """
-        Whenever the logout command has an error this will be tripped.
-        """
-        if isinstance(error, commands.CheckFailure):
-            await ctx.send("Hey! You lack permission to use this command as you do not own the bot.")
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
         else:
             raise error
 
@@ -77,6 +91,14 @@ class Owner(commands.Cog, name = 'Owner'):
         message = message or "Please provide the message to be repeated."
         await ctx.message.delete()
         await ctx.send(message)
+
+    @echo.error
+    async def echo_error(self, ctx, error):
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
+        else:
+            raise error
 
     @commands.command()
     @commands.is_owner()
@@ -135,10 +157,17 @@ class Owner(commands.Cog, name = 'Owner'):
             await ctx.send(f"**Enabled the Cog! `{extension}`**")
         else:
             await ctx.send(f"You are not cool enough to use this command")
+    
+    @load.error
+    async def load_error(self, ctx, error):
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
+        else:
+            raise error
 
     # Unload command to manage our "Cogs" or extensions
     @commands.command()
-    @commands.is_owner()
     async def unload(self, ctx, extension):
         # Check if the user running the command is actually the owner of the bot 
         if ctx.author.id == OWNERID:
@@ -146,6 +175,14 @@ class Owner(commands.Cog, name = 'Owner'):
             await ctx.send(f"**Disabled the Cog! `{extension}`**")
         else:
             await ctx.send(f"You are not cool enough to use this command")
+
+    @unload.error
+    async def unload_error(self, ctx, error):
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
+        else:
+            raise error
 
     # Reload command to manage our "Cogs" or extensions
     @commands.command(name = "reload")
@@ -157,6 +194,14 @@ class Owner(commands.Cog, name = 'Owner'):
             await ctx.send(f"**Reloaded the Cog! `{extension}`**") 
         else:
             await ctx.send(f"You are not cool enough to use this command")
+
+    @reload_.error
+    async def reload_error(self, ctx, error):
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.send("**<a:RedTick:796628786102927390> Hey! You lack permission to use this command as you do not own the bot.**")
+        else:
+            raise error
 
 
 def setup(bot):
