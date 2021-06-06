@@ -7,6 +7,7 @@ import random
 import time
 from ago import human
 import collections
+from discord.member import Member
 import discord.utils
 
 
@@ -36,91 +37,78 @@ class Utility(commands.Cog, name='Utility'):
 
     @commands.command(aliases=['whois', 'ui'], description='To see information of a user.')
     @commands.guild_only()
-    async def userinfo(self, ctx, member: discord.Member = None):
+    async def userinfo(self, ctx, member: typing.Union[discord.User, discord.Member]=None):
 
-        member = member or ctx.author
+        if not member:
+            member = ctx.author
         guild = ctx.guild
-        # ignore the guild check haha it's for the main server :vein_shy:
-        '''
-        if ctx.guild.id != (guild):
+        if member == discord.Member:
+            member_id = str(member.id)
             uroles = []
-            # loops through to get the roles and slickes the @everyone role
             for role in member.roles[1:]:
                 if role.is_default():
                     continue
                 uroles.append(role.mention)
 
                 uroles.reverse()
-            # would suggest the ago module like how i have
+            timestamp = 'ㅤ'
             time = member.created_at
-            time1= member.joined_at
-
-            embed=discord.Embed(color=random.choice(
+            time1 = member.joined_at
+            if member.status == discord.Status.online:
+                status = '<:OnlineStatus:796628774002098187>'
+            elif member.status == discord.Status.idle:
+                status = '<a:IdleStatus:796629237565620234>'
+            elif member.status == discord.Status.dnd:
+                status = '<a:DNDStatus:796629229193789440>'
+            else:
+                status = '<:OfflineStatus:796628779216011275>'
+            if member.activity == None:
+                activity = 'None'
+            else:
+                activity = member.activities[-1].name
+                try:
+                    timestamp = member.activities[0].details
+                except:
+                    timestamp = 'ㅤ'
+            embed = discord.Embed(color=random.choice(
                 self.bot.color_list), timestamp=ctx.message.created_at, type="rich")
-            embed.set_thumbnail(url= f"{member.avatar_url}")
-            embed.set_author(
-                name=f"{member.name}'s information",icon_url=f'{ctx.me.avatar_url}')
-            embed.add_field(name="ㅤ",value=f'**Nickname:** `{member.display_name}`\n\n'
-                                                            f'**ID** {member.id}\n\n'
-                                                            f'**Account created:** {human(time, 4)}\n\n'
-                                                            f'**Server joined at:** {human(time1, 3)}\n\n'
-                                                            f'**Role(s):** {", ".join(uroles)}\n\n'
-                                                            f'**Highest role:** {member.top_role.mention}'
-                                                             , inline=False)
+            embed.set_thumbnail(url=f"{member.avatar_url}")
+            embed.set_author(name=f"{member.name}'s information",
+                            icon_url=f'{ctx.me.avatar_url}')
+            embed.add_field(name="__General information__", value=f'**Nickname :** `{member.display_name}`\n'
+                            f'**ID :** {member.id}\n'
+                            f'**Account created :** {human(time, 4)}\n'
+                            f'**Server joined :** {human(time1, 3)}\n', inline=False)
 
+            embed.add_field(name="__Role info__", value=f'**Highest role :** {member.top_role.mention}\n'
+                            f'**Color** : {member.color}\n'
+                                                        f'**Role(s) :** {", ".join(uroles)}\n', inline=False)
+
+            embed.add_field(name="__Presence__", value=f'**Status : ** {status}\n'
+                            f'**Activity : ** ```{activity}:  \nㅤ{timestamp}```')
             embed.set_footer(
-                text=f"Requested by {ctx.author}",  icon_url=ctx.author.avatar_url)
+                text=f"Requested by {ctx.author.name}",  icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
-
-        elif ctx.guild.id == guild:
-        '''
-        member_id = str(member.id)
-        uroles = []
-        for role in member.roles[1:]:
-            if role.is_default():
-                continue
-            uroles.append(role.mention)
-
-            uroles.reverse()
-        timestamp = 'ㅤ'
-        time = member.created_at
-        time1 = member.joined_at
-        if member.status == discord.Status.online:
-            status = '<:OnlineStatus:796628774002098187>'
-        elif member.status == discord.Status.idle:
-            status = '<a:IdleStatus:796629237565620234>'
-        elif member.status == discord.Status.dnd:
-            status = '<a:DNDStatus:796629229193789440>'
+            return
+            
         else:
-            status = '<:OfflineStatus:796628779216011275>'
-        if member.activity == None:
-            activity = 'None'
-        else:
-            activity = member.activities[-1].name
-            try:
-                timestamp = member.activities[0].details
-            except:
-                timestamp = 'ㅤ'
-        embed = discord.Embed(color=random.choice(
-            self.bot.color_list), timestamp=ctx.message.created_at, type="rich")
-        embed.set_thumbnail(url=f"{member.avatar_url}")
-        embed.set_author(name=f"{member.name}'s information",
-                         icon_url=f'{ctx.me.avatar_url}')
-        embed.add_field(name="__General information__", value=f'**Nickname :** `{member.display_name}`\n'
-                        f'**ID :** {member.id}\n'
-                        f'**Account created :** {human(time, 4)}\n'
-                        f'**Server joined :** {human(time1, 3)}\n', inline=False)
 
-        embed.add_field(name="__Role info__", value=f'**Highest role :** {member.top_role.mention}\n'
-                        f'**Color** : {member.color}\n'
-                                                    f'**Role(s) :** {", ".join(uroles)}\n', inline=False)
+            timestamp = 'ㅤ'
+            time = member.created_at
+            embed2 = discord.Embed(color=random.choice(
+                self.bot.color_list), timestamp=ctx.message.created_at, type="rich")
+            embed2.set_thumbnail(url=f"{member.avatar_url}")
+            embed2.set_author(name=f"{member.name}'s information",
+                            icon_url=f'{ctx.me.avatar_url}')
+            embed2.add_field(name="__General information__", value=f'**Username :** `{member.name}`\n'
+                            f'**ID :** {member.id}\n'
+                            f'**Account created :** `{member.created_at.strftime("%A, %B %d %Y %H:%M:%S %p")}`\n{human(time, 4)}\n',inline=False)
+            embed2.set_footer(
+                text=f"Requested by {ctx.author.name}",  icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed2)
+        # else:
+        #     return await ctx.send(f"**<a:RedTick:796628786102927390> Sorry, I couldn't find that user!**")
 
-        embed.add_field(name="__Presence__", value=f'**Status : ** {status}\n'
-                        f'**Activity : ** ```{activity}:  \nㅤ{timestamp}```')
-        embed.set_footer(
-            text=f"Requested by {ctx.author.name}",  icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed)
-        return
 
 
 # avatar cmd
