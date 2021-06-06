@@ -160,7 +160,7 @@ class Mod(commands.Cog, name='Mod'):
 
     @commands.command()
     @commands.has_permissions(manage_roles=True)
-    async def unmute(self, ctx, member: discord.User):
+    async def unmute(self, ctx, member: discord.Member):
         role = discord.utils.get(ctx.guild.roles, name= "Muted")
         if role in member.roles:
             await member.remove_roles(role)
@@ -234,10 +234,9 @@ class Mod(commands.Cog, name='Mod'):
     @commands.command()
     @commands.has_permissions(manage_roles=True)
     @commands.guild_only()
-    async def role(self, ctx, member: discord.User, *, role_name):
+    async def role(self, ctx, member: discord.Member, *, role : discord.Role):
         if ctx.guild.me.top_role < member.top_role:
             return await ctx.send(f"**<a:RedTick:796628786102927390> The member has higher role than me!**")
-        role = discord.utils.get(ctx.guild.roles, name=f"{role_name}")
         if role is None:
             return await ctx.send(f"**<:hmm:815854699084644352> You sure that is a role? Coz I couldn't find it.**")
         if ctx.message.author.top_role.position <= role.position:
@@ -245,10 +244,10 @@ class Mod(commands.Cog, name='Mod'):
 
         if role not in member.roles:
             await member.add_roles(role)
-            await ctx.send(f"{member} was given role `{role_name}`.")
+            await ctx.send(f"{member} was given role `{role.name}`.")
         else:
             await member.remove_roles(role)
-            await ctx.send(f"{member} was removed from the role `{role_name}`.")
+            await ctx.send(f"{member} was removed from the role `{role.name}`.")
 
 # slowmode
 
