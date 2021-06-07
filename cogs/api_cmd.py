@@ -364,6 +364,21 @@ class Api(commands.Cog, name='Api'):
         m.set_footer(text=f"👍: {ups} | 👎: {downs}\n Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=m)
 
+# joke COMMAND
+
+    @commands.command(aliases=['jokes'], name='Joke')
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def joke(self, ctx):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                    'https://sv443.net/jokeapi/v2/joke/Miscellaneous?blacklistFlags=nsfw,religious,political,racist,sexist&type=twopart') as r:
+                r = await r.json()
+        embed = discord.Embed(title=f"Joke", description=f"{r['setup']}\n {r['delivery']}", colour=random.randint(0x000000, 0xFFFFFF), timestamp=datetime.datetime.utcnow())
+        # embed.add_field(name='Setup:', value=r['setup'])
+        # embed.add_field(name='Delivery:', value=r['delivery'], inline=False)
+        embed.set_footer(text='Prompted by {}'.format(ctx.author), icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Api(bot))
