@@ -20,10 +20,11 @@ limitations under the License.
   <br>
   <br>
  <strong> <i>SPIKE is made with ❤️ by <u>TheKaushikGoswami</u></i></strong>
+ <br>
+ <hr>
   
 ## What is SPIKE?
-<strong>SPIKE, a bot to help you in many ways. Spike's current version 1.0 helps the user in many ways making the discord experience for the user way better. It has a great performance and a 24/7 uptime to help you whenever needed.
-It is user friendly to help new users get familiar with it.</strong>
+<strong>SPIKE is a bot that can do most of the things that everything you require for making a better and better Discord Server. The bot is user-friendly too, to make it comfortable for everyone to get familiar with discord bots and stuff.</strong>
   <hr>
 
 <br>
