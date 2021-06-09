@@ -199,7 +199,7 @@ class Mod(commands.Cog, name='Mod'):
     @commands.command(aliases=['clearuser'], hidden=True)
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def purgeuser(self, ctx, user: discord.User,
+    async def purgeuser(self, ctx, user: discord.Member,
                         num_messages: typing.Optional[int] = 100,
                         ):
 
