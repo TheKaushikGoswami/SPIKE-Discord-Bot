@@ -19,6 +19,13 @@ limitations under the License.
     <img src="https://camo.githubusercontent.com/a6d891796227299aba9e78e8a6c0fd9fb8e622d20ba86bf1c9f1db7f9033ad78/68747470733a2f2f696d616765732d6578742d322e646973636f72646170702e6e65742f65787465726e616c2f565f587177433148586f787343747730584a5445434c4b2d3835344b726e795545644e70456550445f67772f2533467769647468253344313339352532366865696768742533443334392f68747470732f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3832313634393532323637323932363734302f3834353639353136323930353931393531382f5350494b452d62616e6e65722e706e67" align="center">
   <br>
   <br>
+  <img src="https://img.shields.io/github/stars/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=github">
+  <img src="https://img.shields.io/github/languages/top/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=python&color=red">
+  <img src="https://img.shields.io/github/forks/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=github&color=orange">
+  <img src="https://img.shields.io/github/v/release/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=github&color=green">
+  <img src="https://img.shields.io/badge/Library-discord.py-cyan?style=for-the-badge&label=Library&logo=gitbook">
+  <img src="https://img.shields.io/badge/License-Apache--2.0--License-pink?style=for-the-badge&label=License&logo=apache">
+  <br>
  <strong> <i>SPIKE is made with ❤️ by <u>TheKaushikGoswami</u></i></strong>
  <br>
  <hr>
