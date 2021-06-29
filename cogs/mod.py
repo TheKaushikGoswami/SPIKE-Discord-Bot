@@ -1,5 +1,6 @@
 import discord
 from discord import guild
+from discord.errors import HTTPException
 from discord.ext import commands
 from discord import User
 import datetime
@@ -10,22 +11,6 @@ import re
 
 from discord.ext.commands.core import check
 
-time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
-time_dict = {"h":3600, "s":1, "m":60, "d":86400}
-
-class TimeConverter(commands.Converter):
-    async def convert(self, ctx, argument):
-        args = argument.lower()
-        matches = re.findall(time_regex, args)
-        time = 0
-        for v, k in matches:
-            try:
-                time += time_dict[k]*float(v)
-            except KeyError:
-                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
-            except ValueError:
-                raise commands.BadArgument("{} is not a number!".format(v))
-        return time
 
 class Mod(commands.Cog, name='Mod'):
 
@@ -52,7 +37,7 @@ class Mod(commands.Cog, name='Mod'):
     async def kick(self, ctx, user : discord.Member, *, reason = None):
         """Kicks a user from the server."""
         if user == ctx.guild.owner:
-            return await ctx.send(f'**<a:RedTick:796628786102927390> You are not cool enough to mute that person.**')
+            return await ctx.send(f'**<a:RedTick:796628786102927390> You are not cool enough to kick that person.**')
         if ctx.author == user:
             await ctx.send("You cannot kick yourself.")
             return
@@ -123,38 +108,69 @@ class Mod(commands.Cog, name='Mod'):
 #mute CMD
 
     @commands.command(aliases=['tempmute'])
-    @commands.has_permissions(manage_messages=True)
-    async def mute(self, ctx, member: discord.User=None, time:TimeConverter = None, *, reason=None):
-        if member in ctx.guild.members:
+    async def mute(self, ctx, member: discord.Member=None, time=None, *, reason=None):
+        if not member:
+            await ctx.send("You must mention a member to mute!")
+            
+        if member == ctx.guild.owner:
+            return await ctx.send(f'**<a:RedTick:796628786102927390> You are not cool enough to mute that person.**')
 
-            if member == ctx.guild.owner:
-                return await ctx.send(f'**<a:RedTick:796628786102927390> You are not cool enough to mute that person.**')
-            if ctx.message.author.top_role <= member.top_role:
-                await ctx.send(f"**<a:RedTick:796628786102927390> You are not cool enough to mute that person.**")
-                return
-            if not member:
-                await ctx.send("You must mention a member to mute!")
-            elif not time:
-                await ctx.send("You must mention a time!")
-            else:
-                if not reason:
-                    reason= "No Reason Mentioned"
-                guild = ctx.guild
-                Muted = discord.utils.get(guild.roles, name="Muted")
-                if not Muted:
-                    Muted = await guild.create_role(name="Muted")
-                    for channel in guild.channels:
-                        await channel.set_permissions(Muted, speak=False, send_messages=False, read_message_history=True, read_messages=False)
-                await member.add_roles(Muted, reason=reason)
-                muted_embed = discord.Embed(title="New Punishment!", description=f"🤐 You were muted by {ctx.author.mention} for **{time}** coz of reason: **{reason}** in server **{guild.name}**", color=0xE91E63)
-                await ctx.send(f":ok_hand: {member.mention} was successfully muted!")
-                await member.send(embed=muted_embed)
-                await asyncio.sleep(time)
-                await member.remove_roles(Muted)
-                unmute_embed = discord.Embed(title="Mute over!", description=f'Your mute of time: {time} is over now!\n Reason was: `{reason}`\n Make sure not to repeat it again!', color=0xE91E63)
-                await member.send(embed=unmute_embed)
+        if ctx.message.author.top_role <= member.top_role:
+            await ctx.send(f"**<a:RedTick:796628786102927390> You are not cool enough to mute that person.**")
+            return
+
+        elif not time:
+            await ctx.send("You must mention a time!")
+
         else:
-            await ctx.send(f"**<a:RedTick:796628786102927390> The user is not present in the guild!**")
+            if not reason:
+                reason="No reason given"
+            #Now timed mute manipulation
+
+            try:
+                seconds = int(time[:-1]) #Gets the numbers from the time argument, start to -1
+                duration = time[-1] #Gets the timed maniulation, s, m, h, d
+                if duration == "s":
+                    seconds = seconds * 1
+                elif duration == "m":
+                    seconds = seconds * 60
+                elif duration == "h":
+                    seconds = seconds * 60 * 60
+                elif duration == "d":
+                    seconds = seconds * 86400
+                else:
+                    await ctx.send("Invalid duration input")
+                    return
+
+            except Exception as e:
+                print(e)
+                await ctx.send("Invalid time input")
+                return
+
+            guild = ctx.guild
+            Muted = discord.utils.get(guild.roles, name="Muted")
+
+            if not Muted:
+                Muted = await guild.create_role(name="Muted")
+
+                for channel in guild.channels:
+                    await channel.set_permissions(Muted, speak=False, send_messages=False, read_message_history=True, read_messages=False)
+            
+            await member.add_roles(Muted, reason=reason)
+            muted_embed = discord.Embed(title="New Punishment!", description=f"🤐 You were muted by {ctx.author.mention} for **{time}** coz of reason: **{reason}** in server **{guild.name}**", color=0xE91E63)
+            await ctx.send(f":ok_hand: {member.mention} was successfully muted!")
+            try:
+                await member.send(embed=muted_embed)
+            except HTTPException:
+                pass
+            await asyncio.sleep(seconds)
+            await member.remove_roles(Muted)
+            unmute_embed = discord.Embed(title="Mute over!", description=f'Your mute of time: {time} is over now!\n Reason was: `{reason}`\n Make sure not to repeat it again!', color=0xE91E63)
+            try:
+                await member.send(embed=unmute_embed)
+            except HTTPException:
+                pass
+
 
 #unmute CMD           
 
@@ -166,7 +182,10 @@ class Mod(commands.Cog, name='Mod'):
             await member.remove_roles(role)
             unmute_msg = f"``` You have been un-muted in {ctx.guild.name} by the Moderator - {ctx.author.name}```"
             await ctx.send(f"{member.mention} was unmuted.")
-            await member.send(unmute_msg)
+            try:
+                await member.send(unmute_msg)
+            except HTTPException:
+                pass
         else:
             await ctx.send(f"**Is That Person even muted? <:hmm:815854699084644352>**")
 
@@ -219,7 +238,7 @@ class Mod(commands.Cog, name='Mod'):
 # nuke COMMAND
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(manage_channels=True)
     async def nuke(self, ctx):
         channel = ctx.channel
         positions = ctx.channel.position

@@ -1,3 +1,4 @@
+import io
 import discord
 import praw
 from discord.ext import commands, tasks
@@ -378,6 +379,22 @@ class Api(commands.Cog, name='Api'):
         # embed.add_field(name='Delivery:', value=r['delivery'], inline=False)
         embed.set_footer(text='Prompted by {}'.format(ctx.author), icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
+
+#triggered pic CMD
+
+    @commands.command()
+    async def triggered(self, ctx, member: discord.Member = None):
+        if member == None:
+            member = ctx.author
+        await ctx.trigger_typing()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://some-random-api.ml/canvas/triggered?avatar={member.avatar_url_as(format="png")}') as af:
+                if 300 > af.status >= 200:
+                    fp = io.BytesIO (await af.read())
+                    file = discord.File(fp, "triggered.png")
+                    em = discord.Embed(title="", color=ctx.author.color)
+                    em.set_image(url="attachment://triggered.png")
+                    await ctx.send(embed=em, file=file)
 
 
 def setup(bot):

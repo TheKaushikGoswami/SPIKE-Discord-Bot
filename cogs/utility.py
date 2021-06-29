@@ -9,12 +9,14 @@ from ago import human
 import collections
 from discord.member import Member
 import discord.utils
+import asyncio
 
 
 class Utility(commands.Cog, name='Utility'):
 
     def __init__(self, bot):
         self.bot = bot
+        self.times = dict()
 
 # suggestion CMD
 
@@ -216,8 +218,7 @@ class Utility(commands.Cog, name='Utility'):
         except:
             return await ctx.send(f"Couldn't find the role")
         time = role_or_rolename.created_at
-        em = discord.Embed(description=f'', color=random.choice(
-            self.bot.color_list), timestamp=time)
+        em = discord.Embed(description=f'', color=random.choice(self.bot.color_list), timestamp=time)
         em.set_author(name=f'{role_or_rolename}', icon_url=f'{ctx.author.avatar_url}')
         em.set_thumbnail(url=f'{ctx.guild.icon_url}')
         em.add_field(name='__Info__', value=f'**ID :** {str(role_or_rolename.id)} \n'
@@ -226,8 +227,7 @@ class Utility(commands.Cog, name='Utility'):
                                             f'**Position :** {str(role_or_rolename.position)}\n'
                                             f'**Is mentionable :** {str(role_or_rolename.mentionable)}\n'
                                             f'**Members in role :** {str(len(role_or_rolename.members))}\n')
-        em.add_field(name='__Role Permissions__',
-                     value=f', '.join(allowed), inline=False)
+        em.add_field(name='__Role Permissions__', value=f','.join(allowed) or 'No Valid Perms Enabled on this role!', inline=False)
         em.set_footer(text="Role created on")
         await ctx.send(embed=em)
 
@@ -261,6 +261,67 @@ class Utility(commands.Cog, name='Utility'):
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
+#timer COMMAND
+
+    @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def timer(self, ctx, time: str = None):
+        try:
+            is_there = self.times[ctx.author.id]
+            now = time.time()
+            gap = now - is_there['time']
+            del self.times[ctx.author.id]
+            return await ctx.send(embed=discord.Embed(
+                description='⌚ | Timer was set for {}'.format(await self.convert(int(gap))),
+                colour=discord.Colour.red()
+            ))
+        except KeyError:
+            if not time:
+                self.times[ctx.author.id] = {
+                    'time': time.time()
+                }
+                await ctx.send(embed=discord.Embed(
+                    description='⌚ | The timer has been set...',
+                    colour=discord.Colour.red()
+                ))
+            else:
+                try:
+                    time = int(time)
+                except ValueError:
+                    ctx.command.reset_cooldown(ctx)
+                    return await ctx.send(embed=discord.Embed(
+                        description='<a:RedTick:796628786102927390> Time to set must a number (counted with minutes)',
+                        colour=discord.Color.red()
+                        ))
+                await ctx.send(embed=discord.Embed(
+                    description='⌚ | Will remind you in **{}** minutes.'.format(time),
+                    colour=discord.Colour.green()
+                ))
+                await asyncio.sleep(time*60)
+                return await ctx.send(embed=discord.Embed(
+                    description='⏰ | Times Up!',
+                    colour=discord.Color.red()
+                    ), content=ctx.author.mention)
+
+
+#pings COMMAND
+
+    @commands.command(name='Pings')
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.bot_has_guild_permissions(read_message_history=True, read_messages=True)
+    async def pings(self, ctx, limit: str = '10', user: discord.Member = None):
+        user = ctx.author if not user else user
+        try:
+            limit = int(limit)
+        except ValueError:
+            return await ctx.send('The limit for the searching must be a number.')
+        if limit > 100:
+            return await ctx.send('Max limit is 100 messages. This is to keep the command consistent.')
+        counter = 0
+        async for message in ctx.channel.history(limit=limit):
+            if user.mentioned_in(message):
+                counter += 1
+        await ctx.send('You have been pinged {} times in the last {} messages'.format(counter, limit))
 
 """
 #poll CMD

@@ -1,4 +1,6 @@
 import discord
+from discord import colour
+from discord.errors import InvalidArgument, NoMoreItems
 from discord.ext import commands
 import platform
 import sys
@@ -9,6 +11,7 @@ import asyncio
 import aiohttp
 import importlib
 import json
+from discord.ext.commands.core import command
 import utils
 
 guild = 773185292211453974
