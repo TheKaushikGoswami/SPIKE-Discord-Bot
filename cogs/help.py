@@ -130,7 +130,7 @@ class SPIKE(commands.Cog, name='Help'):
             embed1.add_field(
                 name="⚽ Fun & Games", value=f'`8ball` `lovemeter` `rps` `sad/happy/angry` `hello` `lenny` `flip` `f` `calculator` `diceroll` `meme` `joke` `password` `slots` `cheers` `simp` `iq` `roast` `kill`',  inline=False)
             embed1.add_field(
-                name="🖼️ Images", value=f'`cat` `dog` `panda` `koala` `pikachu` `clyde` `facepalm` `wink` `headpat` `hug` `snap`', inline=False)
+                name="🖼️ Images", value=f'`cat` `dog` `panda` `koala` `pikachu` `clyde` `facepalm` `wink` `headpat` `hug` `snap` `triggered`', inline=False)
             embed1.add_field(
                 name="🛠️ Utility", value=f'`userinfo` `serverinfo` `avatar` `membercount` `roleinfo` `channelstats` `dictionary` `say` `embed` `pings` `timer`',  inline=False)
             embed1.add_field(
