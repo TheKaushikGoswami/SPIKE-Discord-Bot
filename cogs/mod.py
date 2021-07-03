@@ -1,6 +1,6 @@
 import discord
 from discord import guild
-from discord.errors import HTTPException
+from discord.errors import Forbidden, HTTPException
 from discord.ext import commands
 from discord import User
 import datetime
@@ -48,11 +48,14 @@ class Mod(commands.Cog, name='Mod'):
             await ctx.send(f"**<:smile_yay:849338019306668052> You can ask my Owner to Leave The Server, He will do it himself!**")
             return
         else:
-            await user.kick()
-            kick_msg = f"``` You have been kicked from {ctx.guild.name} for {reason} by the Moderator - {ctx.author.name}```"
-            kick_embed = discord.Embed(description=f'**<:verifiedserver:796628753005543444> ``{user}`` was successfully kicked!**', color=0x3498DB)
-            await ctx.send(embed=kick_embed)
-            await user.send(kick_msg)
+            try:    
+                await user.kick()
+                kick_msg = f"``` You have been kicked from {ctx.guild.name} for {reason} by the Moderator - {ctx.author.name}```"
+                kick_embed = discord.Embed(description=f'**<:verifiedserver:796628753005543444> ``{user}`` was successfully kicked!**', color=0x3498DB)
+                await ctx.send(embed=kick_embed)
+                await user.send(kick_msg)
+            except Forbidden:
+                await ctx.send(f"**<a:RedTick:796628786102927390> I don't have enough permission to kick this member!**")
 
 #ban CMD
 
@@ -73,11 +76,14 @@ class Mod(commands.Cog, name='Mod'):
             await ctx.send(f"**<:smile_yay:849338019306668052> You can ask my Owner to Leave The Server, He will do it himself!**")
             return
         else:
-            await guild.ban(user)
-            ban_embed = discord.Embed(description=f'**<:verifiedserver:796628753005543444> ``{user}`` was successfully banned!**', color=0x3498DB)
-            ban_msg = f"``` You have been banned from {ctx.guild.name} for {reason} by the Moderator - {ctx.author.name}```"
-            await ctx.send(embed=ban_embed)
-            await user.send(ban_msg)
+            try:    
+                await guild.ban(user)
+                ban_embed = discord.Embed(description=f'**<:verifiedserver:796628753005543444> ``{user}`` was successfully banned!**', color=0x3498DB)
+                ban_msg = f"``` You have been banned from {ctx.guild.name} for {reason} by the Moderator - {ctx.author.name}```"
+                await ctx.send(embed=ban_embed)
+                await user.send(ban_msg)
+            except Forbidden:
+                await ctx.send(f"**<a:RedTick:796628786102927390> I don't have enough permission to ban this member!**")
 
 #unban CMD
 
