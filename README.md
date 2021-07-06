@@ -20,7 +20,7 @@ limitations under the License.
   <br>
   <br>
   <img src="https://img.shields.io/github/stars/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=github">
-  <img src="https://img.shields.io/github/languages/top/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=python&color=red">
+  <img src="https://img.shields.io/github/last-commit/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&color=red">
   <img src="https://img.shields.io/github/forks/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=github&color=orange">
   <img src="https://img.shields.io/github/v/release/TheKaushikGoswami/SPIKE-Discord-Bot?style=for-the-badge&logo=github&color=green">
   <img src="https://img.shields.io/badge/Library-discord.py-cyan?style=for-the-badge&label=Library&logo=gitbook">
