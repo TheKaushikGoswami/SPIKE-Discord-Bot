@@ -156,16 +156,11 @@ extensions=[
             'cogs.nqn',
             'cogs.owner',
             'cogs.api_cmd',
-         #   'cogs.prefix',
             'cogs.help',
-        #    'cogs.giveaway',
-          #  'cogs.welcome',
-        #    'cogs.channel',
             'cogs.snap',
             'cogs.say',
             'cogs.music',
             'cogs.spike'
-          #  'cogs.rr'
 ]
 if __name__ == "__main__":
     for extension in extensions:
